@@ -25,33 +25,33 @@ jobs:
           GITHUB_TOKEN:
             description: 'Github token'
             required: true
-# runs:
-#   using: 'composite'
-#   steps:
-#     - uses: actions/checkout@v4
-
-#     - uses: actions/setup-node@v3
-#       with:
-#         node-version: 18
-
-#     - name: Install Code Review GPT
-#       shell: bash
-#       run: npm install code-review-gpt
-    
-#     - name: Run Code Review GPT
-#       shell: bash
-#       run: npx code-review-gpt review --ci=github --model=$MODEL
+        runs:
+          using: 'composite'
+          steps:
+          - uses: actions/checkout@v4
       
-#       env:
-#         MODEL: ${{ inputs.MODEL }}
-#         OPENAI_API_KEY: ${{ inputs.OPENAI_API_KEY }}
-#         BASE_SHA: ${{ github.event.pull_request.base.sha }}
-#         GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
-
-# branding:
-#   icon: 'code'
-#   color: 'blue'
-#       - name: Code Review GPT
+          - uses: actions/setup-node@v3
+            with:
+              node-version: 18
+      
+          - name: Install Code Review GPT
+            shell: bash
+            run: npm install code-review-gpt
+          
+          - name: Run Code Review GPT
+            shell: bash
+            run: npx code-review-gpt review --ci=github --model=$MODEL
+            
+            env:
+              MODEL: ${{ inputs.MODEL }}
+              OPENAI_API_KEY: ${{ inputs.OPENAI_API_KEY }}
+              BASE_SHA: ${{ github.event.pull_request.base.sha }}
+              GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
+      
+        branding:
+          icon: 'code'
+          color: 'blue'
+      #       - name: Code Review GPT
 #         uses: mattzcarey/code-review-gpt@v0.1.4-alpha
 #         env:
 #           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
