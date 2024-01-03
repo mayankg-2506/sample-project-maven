@@ -49,6 +49,6 @@ jobs:
           pull_request_diff: |-
             ${{ steps.get_diff.outputs.pull_request_diff }}
           #pull_request_chunk_size: "3500"  
-          extra_prompt: |-
-            You are very familiar with python too.
+          # extra_prompt: |-
+          #   You are very familiar with python too.
           log_level: "INFO"
