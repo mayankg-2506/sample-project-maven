@@ -16,7 +16,7 @@ jobs:
         uses: mattzcarey/code-review-gpt@v0.1.4-alpha
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ env.GITHUBB_TOKEN }}
         with:
           MODEL: 'gpt-3.5-turbo'
           
