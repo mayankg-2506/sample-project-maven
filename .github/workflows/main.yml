@@ -17,5 +17,5 @@ jobs:
         with:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           GITHUB_TOKEN: ${{ env.GITHUBB_TOKEN }}
-          MODEL: 'gpt-3.5-turbo'
+          MODEL: 'text-davinci-003'
           
