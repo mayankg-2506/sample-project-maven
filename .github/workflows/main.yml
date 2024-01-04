@@ -68,9 +68,9 @@ jobs:
   run_code_review:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+      # - uses: actions/checkout@v3
+      #   with:
+      #     fetch-depth: 0
               
       - name: Commit-crtiq        
         uses: cAPRIcaT3/apprentice_stable@code-commit
