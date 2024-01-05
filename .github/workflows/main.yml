@@ -188,6 +188,9 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
+      - name: removing dubious ownership
+        shell: bash
+        run: git config --global safe.directory '*'
       - name: print-diff
         shell: bash
         run: |
