@@ -83,77 +83,140 @@ on:
       #     GITHUB_TOKEN: ${{ vars.GITHUBB_TOKEN }}
       #     MODEL: 'gpt-3.5-turbo'
 
-jobs:
-  review:
+# name: "Test Code Review"
+
+# on:
+#   pull_request:
+#     paths-ignore:
+#       - "*.md"
+#       - "LICENSE"
+
+# jobs:
+#   review:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: read
+#       pull-requests: write
+#     steps:
+#       - uses: actions/checkout@v3
+#       - name: "Get diff of the pull request"
+#         id: get_diff
+#         shell: bash
+#         env:
+#           PULL_REQUEST_HEAD_REF: "${{ github.event.pull_request.head.ref }}"
+#         run: |-
+#           git fetch origin "${{ env.PULL_REQUEST_HEAD_REF }}:${{ env.PULL_REQUEST_HEAD_REF }}"
+#           git checkout "${{ env.PULL_REQUEST_HEAD_REF }}"
+#           git diff "origin/${{ env.PULL_REQUEST_HEAD_REF }}" > "diff.txt"
+#           # shellcheck disable=SC2086
+#           echo "diff=$(cat "diff.txt")" >> $GITHUB_ENV
+#       - uses: yu-iskw/gpt-code-review-action@v0.3.0
+#         name: "Code Review by GPT"
+#         id: review
+#         with:
+#           openai_api_key: ${{ secrets.OPENAI_API_KEY }}
+#           github_token: ${{ vars.GITHUBB_TOKEN }}
+#           github_repository: ${{ github.repository }}
+#           github_pull_request_number: ${{ github.event.pull_request.number }}
+#           git_commit_hash: ${{ github.event.pull_request.head.sha }}
+#           model: "gpt-3.5-turbo"
+#           temperature: "0.1"
+#           max_tokens: "512"
+#           top_p: "1"
+#           frequency_penalty: "0.0"
+#           presence_penalty: "0.0"
+#           pull_request_diff: |-
+#             ${{ steps.get_diff.outputs.pull_request_diff }}
+#           pull_request_chunk_size: "3500"
+#           extra_prompt: |-
+#             You are very familiar with python too.
+#           log_level: "DEBUG"
+
+
+
+
+
+
+
+
+
+
+
+
+name: Code Review GPT
+
+on:
+  pull_request:
+    branches: [master]
+
+# jobs:
+#   run_code_review:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v3
+#         with:
+#           fetch-depth: 0
+              
+#       - name: Commit-crtiq        
+#         uses: cAPRIcaT3/apprentice_stable@code-commit
+
+
+      # - name: Code Review GPT
+      #   uses: mattzcarey/code-review-gpt@v0.1.4-alpha
+      #   with:
+      #     OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      #     GITHUB_TOKEN: ${{ vars.GITHUBB_TOKEN }}
+      #     MODEL: 'gpt-3.5-turbo'
+
+jobs:        
+  Review:
     runs-on: ubuntu-latest
+    container: mayankaz104/code-review-llmas:1.0.0
+    env:
+      PR_AUTHOR_GITHUB_ID: ${{ github.event.pull_request.user.login }}
     permissions:
       pull-requests: write
     steps:
-      - name: Checkout repository
+      - uses: actions/checkout@v2
+      
+      - name: Find Github id of PR AUTHOR
+        run: |
+          echo "PR author: ${PR_AUTHOR_GITHUB_ID}"
+      - name: Checkout pull request HEAD
+        id: checkout_pr_head
         uses: actions/checkout@v2
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
-
-      - name: Install dependencies
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+      - name: print-diff
+        shell: bash
         run: |
-          pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Run PR Reviewer
-        run: |
-          python - << EOF
-import glob
-import os
-from huggingface_hub import hf_hub_download
-from llama_cpp import Llama
-
-model_name_or_path = "TheBloke/Llama-2-13B-chat-GGML"
-model_basename = "llama-2-13b-chat.ggmlv3.q5_1.bin"
-
-model_path = hf_hub_download(repo_id=model_name_or_path, filename=model_basename)
-
-lcpp_llm = Llama(
-    model_path=model_path,
-    n_threads=2,
-    n_batch=512,
-    n_gpu_layers=32,
-    n_ctx=3072
-)
-
-github_workspace_path = os.getenv("GITHUB_WORKSPACE")
-
-with open(f"{github_workspace_path}/difference_hunk.txt", "r") as diff_handle:
-    diff = diff_handle.read()
-
-prompt = (
-    """you are a code review assistant. Concisely summarize the major code difference in ONE LINE, explaining the difference in a way humans can understand. do it in the format:\nCHANGE: Explanation.\n\nHere is the code difference: """
-    + diff
-)
-prompt_template = f'''SYSTEM: You are a helpful, respectful and honest assistant. Always answer as helpfully.\n\nUSER: {prompt}\n\nASSISTANT:'''
-
-response = lcpp_llm(
-    prompt=prompt_template,
-    max_tokens=1536,
-    temperature=0.5,
-    top_p=0.95,
-    repeat_penalty=1.2,
-    top_k=50,
-    echo=False
-)["choices"][0]["text"]
-
-with open("src/files/output.txt", "a") as f:
-    f.write(f"{response}")
-EOF
-
+          git fetch origin master
+          git diff origin/master..HEAD > difference_hunk.txt
+          find . -type f -name difference_hunk.txt
+          pwd
+          echo "difference hunk = "
+          cat difference_hunk.txt
+          
+      # - name: Cache dependencies
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: ${{ env.HOME }}/.cache/pip
+      #     key: ${{ runner.os }}-dependencies-${{ hashFiles('requirements.txt') }}-{{ fileset.modifiedTime('requirements.txt') }}
+      # - uses: actions/setup-python@v4
+      #   with:
+      #       python-version: '3.10' 
+      # - name: installations
+      #   run: |
+      #     pip install --upgrade pip
+      #     pip install -r requirements.txt
+      - name: Run Python script
+        run: python /app/src/commenter.py
       - name: Read PR comment from file
-        run: cat src/files/output.txt > pr_comment.txt
-
+        run: cat /app/src/files/output.txt > pr_comment.txt
       - name: Add PR comment
         uses: mshick/add-pr-comment@v2
         with:
           message-path: pr_comment.txt
-          repo-directory: './'
+          repo-directory: '/app/'
           requirements-path: 'requirements.txt'
