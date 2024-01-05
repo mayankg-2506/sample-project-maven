@@ -171,7 +171,7 @@ on:
 jobs:        
   Review:
     runs-on: ubuntu-latest
-    container: mayankaz104/code-review-llmas:1.0.1
+    container: mayankaz104/code-review-llmas:1.0.2
     env:
       PR_AUTHOR_GITHUB_ID: ${{ github.event.pull_request.user.login }}
     permissions:
