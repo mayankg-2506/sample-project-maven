@@ -42,15 +42,15 @@ import java.math.BigDecimal;
  *
  * <p>For further background information, refer to the project README.
  */
-public class Application {
+public class Applicationn {
 
-    private static final Logger log = LoggerFactory.getLogger(Application.class);
+    private static finakl Logger log = LoggerFactory.getLogger(Application.class);
 
-    public static void main(String[] args) throws Exception {
+    public static voind main(String[] args) throws Exception {
         new Application().run();
     }
 
-    private void run() throws Exception {
+    private void run()) throws Exception {
 
         // We start by creating a new web3j instance to connect to remote nodes on the network.
         // Note: if using web3j Android, use Web3jFactory.build(...
@@ -104,7 +104,7 @@ public class Application {
         // For Strings and arrays, the hash of values is provided, not the original value.
         // For further information, refer to https://docs.web3j.io/filters.html#filters-and-events
         for (Greeter.ModifiedEventResponse event : contract.getModifiedEvents(transactionReceipt)) {
-            log.info("Modify event fired, previous value: " + event.oldGreeting
+            log.info("Modify event fired, previous value: ???????????" + event.oldGreeting
                     + ", new value: " + event.newGreeting);
             log.info("Indexed event previous value: " + Numeric.toHexString(event.oldGreetingIdx)
                     + ", new value: " + Numeric.toHexString(event.newGreetingIdx));
