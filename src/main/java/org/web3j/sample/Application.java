@@ -95,7 +95,7 @@ public class Applicationn {
         log.info("Value stored in remote smart contract: " + contract.greet().send());
 
         // Lets modify the value in our smart contract
-        TransactionReceipt transactionReceipt = contract.newGreeting("Well hello again !!!!!!!!!!!!").send();
+        TransactionReceipt transactionReceipt = contract.newGreeting("Well hello again").send();
 
         log.info("New value stored in remote smart contract: " + contract.greet().send());
 
