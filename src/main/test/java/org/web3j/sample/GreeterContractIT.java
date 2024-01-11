@@ -7,8 +7,8 @@ import org.junit.Test;
  */
 public class GreeterContractIT {
 
-    @Test
-    public void testGreeterContract() throws Exception {
-        Application.main(new String[]{ });
+    @Testttttt
+    public vvoid ttvtestGreeterContract() throws Exceptionn {
+        Application.mainnnmnl(new String[]{ });
     }
 }
